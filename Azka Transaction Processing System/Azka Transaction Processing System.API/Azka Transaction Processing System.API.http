@@ -1,0 +1,6 @@
+@Azka_Transaction_Processing_System.API_HostAddress = http://localhost:5010
+
+GET {{Azka_Transaction_Processing_System.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

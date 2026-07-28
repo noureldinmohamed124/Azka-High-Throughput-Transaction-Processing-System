@@ -1,0 +1,93 @@
+############################################
+# .NET Backend API Project
+############################################
+
+# ===========================
+# Build Outputs
+# ===========================
+**/bin/
+**/obj/
+artifacts/
+
+# ===========================
+# User & IDE Files (VS, VS Code, Rider)
+# ===========================
+.vs/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+_ReSharper*/
+*.DotSettings.user
+
+# ===========================
+# Logs
+# ===========================
+*.log
+logs/
+Log/
+
+# ===========================
+# Environment & Secrets
+# ===========================
+.env
+.env.*
+**/appsettings.Local.json
+
+# ===========================
+# Publish
+# ===========================
+publish/
+*.pubxml
+*.publishproj
+!*.azurePubxml
+
+# ===========================
+# Packages
+# ===========================
+*.nupkg
+*.snupkg
+
+# ===========================
+# Test Results & Benchmarks
+# ===========================
+TestResults/
+coverage/
+coverage*.json
+coverage*.xml
+coverage*.info
+BenchmarkDotNet.Artifacts/
+
+# ===========================
+# Database Files (Local SQL Server)
+# ===========================
+*.mdf
+*.ldf
+*.ndf
+
+# ===========================
+# Temporary & Local History Files
+# ===========================
+*.tmp
+*.temp
+*.cache
+*.bak
+*.swp
+*~
+.history/
+.localhistory/
+.vshistory/
+
+# ===========================
+# Operating System
+# ===========================
+.DS_Store
+Thumbs.db
+Desktop.ini
