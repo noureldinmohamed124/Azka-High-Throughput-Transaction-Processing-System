@@ -33,6 +33,7 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistance.Configur
                 x.Date
             })
             .IsUnique();
+
         }
     }
 }

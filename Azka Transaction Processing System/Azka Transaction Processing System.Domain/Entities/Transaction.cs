@@ -11,11 +11,8 @@ namespace Azka_Transaction_Processing_System.Domain.Entities
     {
         public int Id { get; set; }
         public string ReceiptNumber { get; set; } = string.Empty;
-
         public int CustomerId { get; set; }
-
         public int BranchId { get; set; }
-
         public int PaymentMethodId { get; set; }
 
         public decimal Amount { get; set; }
