@@ -10,6 +10,7 @@ namespace Azka_Transaction_Processing_System.Domain.Enums
     {
         Payment = 1,
         Refund = 2,
-        Reversal = 3
+        Reversal = 3,
+        Chargeback = 4
     }
 }

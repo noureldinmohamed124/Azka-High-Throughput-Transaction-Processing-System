@@ -15,5 +15,6 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
         Task<List<Transaction>> SearchAsync(int? customerId, DateOnly? date, string? receiptNumber);
 
         Task<bool> ReceiptExistsAsync(string receiptNumber);
+
     }
 }

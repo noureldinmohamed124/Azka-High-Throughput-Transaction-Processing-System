@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Azka Transaction Processing System.Application\Azka Transaction Processing System.Application.csproj" />
     <ProjectReference Include="..\Azka Transaction Processing System.Infrastructure\Azka Transaction Processing System.Infrastructure.csproj" />
   </ItemGroup>

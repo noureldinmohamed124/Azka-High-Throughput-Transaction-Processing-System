@@ -10,10 +10,11 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
 {
     public interface IReceiptSequenceRepository
     {
-        Task<ReceiptSequence?> GetAsync(ReceiptPrefixEnum prefix, DateOnly date);
-
-        Task AddAsync(ReceiptSequence sequence);
-
-        void Update(ReceiptSequence sequence);
+        public interface IReceiptSequenceRepository
+        {
+            Task<ReceiptSequence?> GetForUpdateAsync(ReceiptPrefixEnum prefix, DateOnly date, CancellationToken cancellationToken = default);
+            Task AddAsync(ReceiptSequence sequence, CancellationToken cancellationToken = default);
+            void Update(ReceiptSequence sequence);
+        }
     }
 }

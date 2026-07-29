@@ -1,4 +1,5 @@
-﻿using Azka_Transaction_Processing_System.Domain.Enums;
+﻿using Azka_Transaction_Processing_System.Application.Common.DTOs;
+using Azka_Transaction_Processing_System.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Services
 {
     public interface IReceiptGenerator
     {
-        Task<string> GenerateAsync(string receiptPrefixCode, int branchId);
+        Task<ReceiptNumberResult> GenerateAsync(ReceiptPrefixEnum prefix,int customerId, CancellationToken cancellationToken = default);
     }
 }
