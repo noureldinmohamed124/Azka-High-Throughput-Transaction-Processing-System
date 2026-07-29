@@ -18,9 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="DTOs\" />
-    <Folder Include="Commons\" />
   </ItemGroup>
 
   <ItemGroup>

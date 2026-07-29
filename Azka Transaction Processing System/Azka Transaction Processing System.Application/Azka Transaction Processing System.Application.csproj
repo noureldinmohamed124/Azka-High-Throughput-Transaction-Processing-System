@@ -8,9 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
-    <Folder Include="Modules\" />
-    <Folder Include="Exceptions\" />
+    <Folder Include="Modules\Customers\" />
+    <Folder Include="Modules\Branches\" />
+    <Folder Include="Modules\Transactions\" />
+    <Folder Include="Modules\PaymentMethods\" />
+    <Folder Include="Modules\Reports\SearchByReceipt\" />
   </ItemGroup>
 
   <ItemGroup>
