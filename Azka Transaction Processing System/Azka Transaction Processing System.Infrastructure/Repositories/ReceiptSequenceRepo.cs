@@ -1,6 +1,8 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Domain.Enums;
+using Azka_Transaction_Processing_System.Infrastructure.Presistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +13,33 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
 {
     public class ReceiptSequenceRepo : IReceiptSequenceRepo
     {
-        public Task AddAsync(ReceiptSequence sequence, CancellationToken cancellationToken = default)
+        private readonly TPSDbContext _context;
+
+        public ReceiptSequenceRepo(TPSDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<ReceiptSequence?> GetForUpdateAsync(ReceiptPrefixEnum prefix, DateOnly date, CancellationToken cancellationToken = default)
+        public async Task<ReceiptSequence?> GetForUpdateAsync(ReceiptPrefixEnum prefix, DateOnly date, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await _context.ReceiptSequences
+                .FromSqlInterpolated($@"
+                    SELECT *
+                    FROM ReceiptSequences WITH (UPDLOCK, ROWLOCK)
+                    WHERE Prefix = {(int)prefix}
+                    AND [Date] = {date}")
+                .AsTracking()
+                .SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task AddAsync(ReceiptSequence sequence, CancellationToken cancellationToken = default)
+        {
+            await _context.ReceiptSequences.AddAsync(sequence, cancellationToken);
         }
 
         public void Update(ReceiptSequence sequence)
         {
-            throw new NotImplementedException();
+            _context.ReceiptSequences.Update(sequence);
         }
     }
 }

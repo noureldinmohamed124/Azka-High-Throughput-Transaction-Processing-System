@@ -1,9 +1,17 @@
-﻿using Azka_Transaction_Processing_System.Infrastructure.Presistance;
+﻿using Azka_Transaction_Processing_System.Application.Abstractions.Common;
+using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
+using Azka_Transaction_Processing_System.Application.Abstractions.Services;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
+using Azka_Transaction_Processing_System.Infrastructure.Presistence;
+using Azka_Transaction_Processing_System.Infrastructure.Repositories;
+using Azka_Transaction_Processing_System.Infrastructure.Security;
+using Azka_Transaction_Processing_System.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddHttpContextAccessor();
 
 
 // 1. DbContext
@@ -20,16 +29,25 @@ builder.Services.AddDbContext<TPSDbContext>(options =>
 
 
 // 2. Repositories
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IGenericRepo<>),typeof(GenericRepo<>));
+builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
+builder.Services.AddScoped<IBranchRepo, BranchRepo>();
+builder.Services.AddScoped<IPaymentMethodRepo, PaymentMethodRepo>();
+builder.Services.AddScoped<ITransactionRepo, TransactionRepo>();
+builder.Services.AddScoped<IReceiptSequenceRepo, ReceiptSequenceRepo>();
+
 
 
 
 // 3. Services
-
+builder.Services.AddScoped<IReceiptGenerator, ReceiptGenerator>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 
 // 4. Use Cases
-
+builder.Services.AddScoped<CreateTransactionUseCase>();
 
 
 
@@ -71,10 +89,19 @@ builder.Services.AddCors(options =>
 
 
 
+// 7. Enforce Enums to accept only String
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters
+        .Add(new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+});
+
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 
 // Show Swagger Authorize Button
 builder.Services.AddSwaggerGen(options =>
@@ -122,7 +149,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -149,11 +178,13 @@ app.Run();
     Install-Package Microsoft.EntityFrameworkCore.Tools -version 8.0.20 (Infrastructure)
     Install-Package Microsoft.EntityFrameworkCore.SqlServer -version 8.0.20 (Infrastructure)
     Install-Package Microsoft.AspNetCore.Cryptography.KeyDerivation -version 8.0.20 (Infrastructure)
+    Install-Package Microsoft.AspNetCore.Http.Abstractions (Infrastructure)
+
     Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.20 (API)
     Install-Package Microsoft.EntityFrameworkCore.Design -version 8.0.20 (API)
     
 
-    Add-Migration InitialCreate -OutputDir Presistance/Migrations (مش لازم تعملوها)
+    Add-Migration InitialCreate -OutputDir Presistence/Migrations (مش لازم تعملوها)
  
 
 */
