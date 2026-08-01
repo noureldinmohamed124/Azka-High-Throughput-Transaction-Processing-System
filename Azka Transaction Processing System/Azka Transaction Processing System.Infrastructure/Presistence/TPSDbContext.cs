@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Azka_Transaction_Processing_System.Infrastructure.Presistance
+namespace Azka_Transaction_Processing_System.Infrastructure.Presistence
 {
     public class TPSDbContext : DbContext
     {
