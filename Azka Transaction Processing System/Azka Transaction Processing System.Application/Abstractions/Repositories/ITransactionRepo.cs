@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositories
 {
-    public interface ITransactionRepository : IGenericRepo<Transaction>
+    public interface ITransactionRepo : IGenericRepo<Transaction>
     {
         Task<Transaction?> GetByReceiptAsync(string receiptNumber);
 

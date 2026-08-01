@@ -1,7 +1,7 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Domain.Enums;
-using Azka_Transaction_Processing_System.Infrastructure.Presistance;
+using Azka_Transaction_Processing_System.Infrastructure.Presistence;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
 {
-    internal class ReceiptSequenceRepository : IReceiptSequenceRepository
+    internal class ReceiptSequenceRepository : IReceiptSequenceRepo
     {
         private readonly TPSDbContext _context;
 

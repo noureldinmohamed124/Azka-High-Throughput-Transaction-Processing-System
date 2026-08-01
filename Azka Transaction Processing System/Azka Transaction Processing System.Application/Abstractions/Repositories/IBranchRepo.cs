@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositories
 {
-    public interface IPaymentMethodRepository : IGenericRepo<PaymentMethod>
+    public interface IBranchRepo : IGenericRepo<Branch>
     {
-        Task<bool> ExistsAsync(int id);
+        Task<Branch?> GetByCodeAsync(string code);
 
-        Task<PaymentMethod?> GetByNameAsync(string name);
+        Task<bool> ExistsAsync(int branchId);
     }
 }
