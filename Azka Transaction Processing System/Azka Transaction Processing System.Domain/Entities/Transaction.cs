@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azka_Transaction_Processing_System.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Azka_Transaction_Processing_System.Domain.Entities
 
         public decimal Amount { get; set; }
 
-        public TransactionStatus Status { get; set; }
+        public TransactionStatusEnum Status { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

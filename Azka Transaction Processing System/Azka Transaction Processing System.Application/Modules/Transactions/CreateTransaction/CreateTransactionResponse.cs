@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azka_Transaction_Processing_System.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.Cr
         public int TransactionId { get; init; }
         public string ReceiptNumber { get; init; } = string.Empty;
         public decimal Amount { get; init; }
-        public string Status { get; init; } = string.Empty;
+        public TransactionStatusEnum Status { get; init; }
         public DateTime CreatedOn { get; init; }
     }
 }
