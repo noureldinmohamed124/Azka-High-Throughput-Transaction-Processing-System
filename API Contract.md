@@ -70,7 +70,6 @@ GET /api/transactions
 |-----------|------|----------|
 | customerId | int | No |
 | date | DateOnly | No |
-| receiptNumber | string | No |
 
 **Examples**
 
@@ -92,19 +91,12 @@ Search by customer and date
 GET /api/transactions?customerId=15&date=2026-07-30
 ```
 
-Search by receipt number
-
-```http
-GET /api/transactions?receiptNumber=PAY-20260730-15-000001
-```
-
 **Description**
 
 Allows searching transactions using one or more filters.
 
 **Requirement Covered**
 
-- Search by receipt.
 - Search by customer.
 - Search by date.
 
