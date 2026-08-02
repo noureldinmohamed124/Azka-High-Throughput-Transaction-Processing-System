@@ -1,6 +1,7 @@
 ﻿using Azka_Transaction_Processing_System.API.Commons;
 using Azka_Transaction_Processing_System.API.DTOs.Transactions;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +18,14 @@ namespace Azka_Transaction_Processing_System.API.Controllers
         private readonly CreateTransactionUseCase _createTransactionUseCase;
         private readonly GetTransactionByReceiptNumberUseCase _searchTransactionByReceiptNumberUseCase;
         private readonly SearchTransactionsUseCase _searchTransactionsUseCase;
+        private readonly DailyTransactionSummaryUseCase _dailyTransactionSummaryUseCase;
 
-        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase)
+        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase, DailyTransactionSummaryUseCase dailyTransactionSummaryUseCase)
         {
             _createTransactionUseCase = createTransactionUseCase;
             _searchTransactionByReceiptNumberUseCase = searchTransactionByReceiptNumberUseCase;
             _searchTransactionsUseCase = searchTransactionsUseCase;
+            _dailyTransactionSummaryUseCase = dailyTransactionSummaryUseCase;
         }
 
         [HttpPost]
@@ -70,6 +73,20 @@ namespace Azka_Transaction_Processing_System.API.Controllers
             return OkResponse(result);
 
         }
+
+
+        [AllowAnonymous]
+        [HttpGet("daily-summary")]
+        public async Task<IActionResult> GetDailySummary([FromQuery] DateOnly date)
+        {
+            var query = new DailyTransactionSummaryQuery 
+            {
+                Date = date 
+            };
+            var response = await _dailyTransactionSummaryUseCase.ExecuteAsync(query);
+            return OkResponse(response);
+        }
+
 
 
     }

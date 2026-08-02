@@ -1,4 +1,5 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
@@ -27,15 +28,10 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.ReceiptNumber == receiptNumber);
         }
 
-        public Task<bool> ReceiptExistsAsync(string receiptNumber)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IReadOnlyList<SearchTransactionSummaryResponse>> SearchAsync(int? customerId, DateOnly? date)
         {
             var query = _context.Transactions
-        .AsNoTracking();
+                .AsNoTracking();
 
             if (customerId.HasValue)
             {
@@ -60,5 +56,51 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
                 })
                 .ToListAsync();
         }
+
+        public async Task<DailyTransactionSummaryResponse> GetDailySummaryAsync(DateOnly date)
+        {
+            var query = _context.Transactions.AsNoTracking().Where(x => DateOnly.FromDateTime(x.CreatedOn) == date);
+
+            var summary = await query.GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    TotalTransactions = g.Count(),
+                    TotalAmount = g.Sum(x => x.Amount),
+                    AverageAmount = g.Average(x => x.Amount),
+                    LargestTransaction = g.Max(x => x.Amount),
+                    SmallestTransaction = g.Min(x => x.Amount)
+                })
+                .FirstOrDefaultAsync();
+
+
+            if (summary == null)
+            {
+                return new DailyTransactionSummaryResponse
+                {
+                    Date = date
+                };
+            }
+
+            var statuses = await query.GroupBy(x => x.Status)
+                .Select(g => new TransactionStatusSummary
+                {
+                    Status = g.Key,
+                    Count = g.Count(),
+                    TotalAmount = g.Sum(x => x.Amount)
+                })
+                .ToListAsync();
+
+            return new DailyTransactionSummaryResponse
+            {
+                Date = date,
+                TotalTransactions = summary.TotalTransactions,
+                TotalAmount = summary.TotalAmount,
+                AverageAmount = summary.AverageAmount,
+                LargestTransaction = summary.LargestTransaction,
+                SmallestTransaction = summary.SmallestTransaction,
+                Statuses = statuses
+            };
+        }
+
     }
 }
