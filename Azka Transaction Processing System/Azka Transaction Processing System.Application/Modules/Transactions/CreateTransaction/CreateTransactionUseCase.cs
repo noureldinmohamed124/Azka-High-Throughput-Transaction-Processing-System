@@ -37,46 +37,64 @@ namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.Cr
         public async Task<CreateTransactionResponse> ExecuteAsync(CreateTransactionCommand command)
         {
 
-            await _unitOfWork.BeginTransactionAsync();
+            var userId = _currentUserService.UserId;
+            command.CustomerId = userId;
 
-            try
+            // validate customer, branch, payment method
+            await ValidateTransactionReferencesAsync(command);
+
+            const int MaxRetries = 3;
+
+            for (int attempt = 1;attempt <= MaxRetries; attempt++)
             {
-                // validate customer, branch, payment method
-                await ValidateTransactionReferencesAsync(command);
+                await _unitOfWork.BeginTransactionAsync();
 
-                var receipt = await _receiptGenerator.GenerateAsync(command.TransactionType, command.CustomerId);
-
-                var transaction = new Transaction
+                try
                 {
-                    ReceiptNumber = receipt.ReceiptNumber,
-                    CustomerId = command.CustomerId,
-                    BranchId = command.BranchId,
-                    PaymentMethodId = command.PaymentMethodId,
-                    Amount = command.Amount,
-                    Status = command.TransactionStatus,
-                    CreatedOn = DateTime.UtcNow,
-                    SettledOn = null
-                };
+                    
+                    var receipt = await _receiptGenerator.GenerateAsync(command.TransactionType, command.CustomerId);
 
-                await _transactionRepo.AddAsync(transaction);
+                    var transaction = new Transaction
+                    {
+                        ReceiptNumber = receipt.ReceiptNumber,
+                        CustomerId = command.CustomerId,
+                        BranchId = command.BranchId,
+                        PaymentMethodId = command.PaymentMethodId,
+                        Amount = command.Amount,
+                        Status = command.TransactionStatus,
+                        CreatedOn = DateTime.UtcNow,
+                        SettledOn = null
+                    };
 
-                await _unitOfWork.SaveChangesAsync();
+                    await _transactionRepo.AddAsync(transaction);
 
-                await _unitOfWork.CommitTransactionAsync();
+                    await _unitOfWork.SaveChangesAsync();
 
-                return new CreateTransactionResponse
+                    await _unitOfWork.CommitTransactionAsync();
+
+                    return new CreateTransactionResponse
+                    {
+                        ReceiptNumber = receipt.ReceiptNumber,
+                        Amount = transaction.Amount,
+                        Status = transaction.Status,
+                    };
+                }
+                catch (DuplicateReceiptSequenceException)
                 {
-                    ReceiptNumber = receipt.ReceiptNumber,
-                    Amount = transaction.Amount,
-                    Status = transaction.Status,
-                };
+                    await _unitOfWork.RollbackTransactionAsync();
+
+                    _unitOfWork.ClearChanges();
+
+                    continue;
+                }
+                catch
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    throw;
+                }
             }
-            catch
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
-            
+
+            throw new BusinessRuleException("Unable to generate a unique receipt number. Please try again.");
         }
 
         private async Task ValidateTransactionReferencesAsync(CreateTransactionCommand command)
@@ -97,6 +115,9 @@ namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.Cr
             if (paymentMethod == null) throw new NotFoundException("This Payment Method was not Found");
 
         }
+
+
+
 
     }
 }

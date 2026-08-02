@@ -32,7 +32,8 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Configur
                 x.Prefix,
                 x.Date
             })
-            .IsUnique();
+            .IsUnique()
+            .HasDatabaseName("IX_ReceiptSequence_Prefix_Date");
 
         }
     }
