@@ -573,6 +573,7 @@ Unexpected exceptions are logged and returned as **500 Internal Server Error** r
 {
   "success": false,
   "message": "Customer not found.",
+  "data": null,
   "errors": null
 }
 ```
@@ -583,6 +584,7 @@ Unexpected exceptions are logged and returned as **500 Internal Server Error** r
 {
   "success": false,
   "message": "Validation failed.",
+  "data": null,
   "errors": [
     "Amount must be greater than zero.",
     "Transaction amount exceeds the allowed limit."
