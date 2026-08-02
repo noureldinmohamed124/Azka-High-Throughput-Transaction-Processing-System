@@ -1,4 +1,5 @@
-﻿using Azka_Transaction_Processing_System.Application.Abstractions.Common;
+﻿using Azka_Transaction_Processing_System.API.Middlewares;
+using Azka_Transaction_Processing_System.Application.Abstractions.Common;
 using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
 using Azka_Transaction_Processing_System.Application.Abstractions.Services;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
@@ -161,6 +162,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthentication();
 
