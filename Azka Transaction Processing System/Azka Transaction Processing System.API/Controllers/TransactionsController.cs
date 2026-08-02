@@ -1,5 +1,6 @@
 ﻿using Azka_Transaction_Processing_System.API.Commons;
 using Azka_Transaction_Processing_System.API.DTOs.Transactions;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.CancelTransaction;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceipt;
@@ -19,13 +20,15 @@ namespace Azka_Transaction_Processing_System.API.Controllers
         private readonly GetTransactionByReceiptUseCase _searchTransactionByReceiptNumberUseCase;
         private readonly SearchTransactionsUseCase _searchTransactionsUseCase;
         private readonly DailyTransactionSummaryUseCase _dailyTransactionSummaryUseCase;
+        private readonly CancelTransactionUseCase _cancelTransactionUseCase;
 
-        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase, DailyTransactionSummaryUseCase dailyTransactionSummaryUseCase)
+        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase, DailyTransactionSummaryUseCase dailyTransactionSummaryUseCase, CancelTransactionUseCase cancelTransactionUseCase)
         {
             _createTransactionUseCase = createTransactionUseCase;
             _searchTransactionByReceiptNumberUseCase = searchTransactionByReceiptNumberUseCase;
             _searchTransactionsUseCase = searchTransactionsUseCase;
             _dailyTransactionSummaryUseCase = dailyTransactionSummaryUseCase;
+            _cancelTransactionUseCase = cancelTransactionUseCase;
         }
 
         [HttpPost]
@@ -88,6 +91,13 @@ namespace Azka_Transaction_Processing_System.API.Controllers
         }
 
 
+        [AllowAnonymous]
+        [HttpPost("{receiptNumber}/cancel")]
+        public async Task<IActionResult> CancelTransaction(string receiptNumber)
+        {
+            var response = await _cancelTransactionUseCase.ExecuteAsync(receiptNumber);
+            return OkResponse(response);
+        }
 
     }
 }

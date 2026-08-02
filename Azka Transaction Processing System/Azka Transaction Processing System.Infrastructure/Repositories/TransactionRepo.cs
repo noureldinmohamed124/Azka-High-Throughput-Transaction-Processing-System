@@ -102,5 +102,9 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
             };
         }
 
+        public Task<Transaction?> GetByReceiptAsync(string receiptNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

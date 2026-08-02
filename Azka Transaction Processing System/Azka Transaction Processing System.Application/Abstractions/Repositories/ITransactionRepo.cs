@@ -18,5 +18,6 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
 
         Task<DailyTransactionSummaryResponse> GetDailySummaryAsync(DateOnly date);
 
+        Task<Transaction?> GetByReceiptAsync(string receiptNumber);
     }
 }

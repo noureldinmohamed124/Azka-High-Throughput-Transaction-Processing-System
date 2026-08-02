@@ -24,6 +24,8 @@ namespace Azka_Transaction_Processing_System.Domain.Entities
 
         public DateTime? SettledOn { get; set; }
 
+        public DateTime? CancelledOn { get; set; }
+
         public Customer Customer { get; set; } = null!;
 
         public Branch Branch { get; set; } = null!;

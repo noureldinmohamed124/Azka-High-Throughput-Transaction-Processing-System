@@ -83,7 +83,8 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SettledOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    SettledOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CancelledOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -106,6 +107,28 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
                         principalTable: "PaymentMethods",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Branches",
+                columns: new[] { "Id", "Code", "Name" },
+                values: new object[,]
+                {
+                    { 1, "C1", "Cairo" },
+                    { 2, "A1", "Alex" },
+                    { 3, "G1", "Giza" },
+                    { 4, "S1", "Suez" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Customers",
+                columns: new[] { "Id", "Email", "FullName", "Phone" },
+                values: new object[,]
+                {
+                    { 1, "omar@gamil.com", "Omar Youssef", "01064821657" },
+                    { 2, "ahmed@gamil.com", "Ahmed Mohamed", "01067521657" },
+                    { 3, "mohamed@gamil.com", "Mohamed Hossam", "01035821657" },
+                    { 4, "adel@gamil.com", "Adel Mostafa", "01464821957" }
                 });
 
             migrationBuilder.InsertData(
@@ -145,7 +168,7 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceiptSequences_Prefix_Date",
+                name: "IX_ReceiptSequence_Prefix_Date",
                 table: "ReceiptSequences",
                 columns: new[] { "Prefix", "Date" },
                 unique: true);
