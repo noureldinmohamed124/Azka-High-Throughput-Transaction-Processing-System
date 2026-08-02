@@ -2,6 +2,7 @@
 using Azka_Transaction_Processing_System.API.DTOs.Transactions;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace Azka_Transaction_Processing_System.API.Controllers
     {
         private readonly CreateTransactionUseCase _createTransactionUseCase;
         private readonly GetTransactionByReceiptNumberUseCase _searchTransactionByReceiptNumberUseCase;
+        private readonly SearchTransactionsUseCase _searchTransactionsUseCase;
 
-        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase)
+        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase)
         {
             _createTransactionUseCase = createTransactionUseCase;
             _searchTransactionByReceiptNumberUseCase = searchTransactionByReceiptNumberUseCase;
+            _searchTransactionsUseCase = searchTransactionsUseCase;
         }
 
         [HttpPost]
@@ -49,6 +52,23 @@ namespace Azka_Transaction_Processing_System.API.Controllers
             };
             var result = await _searchTransactionByReceiptNumberUseCase.ExecuteAsync(query);
             return OkResponse(result);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> SearchTransactions([FromQuery] SearchTransactionsRequest request)
+        {
+            var query = new SearchTransactionsQuery
+            {
+                CustomerId = request.CustomerId,
+                Date = request.Date
+            };
+
+            var result = await _searchTransactionsUseCase.ExecuteAsync(query);
+
+            return OkResponse(result);
+
         }
 
 

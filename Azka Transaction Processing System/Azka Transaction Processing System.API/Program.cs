@@ -4,6 +4,7 @@ using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
 using Azka_Transaction_Processing_System.Application.Abstractions.Services;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
 using Azka_Transaction_Processing_System.Infrastructure.Repositories;
 using Azka_Transaction_Processing_System.Infrastructure.Security;
@@ -51,6 +52,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 // 4. Use Cases
 builder.Services.AddScoped<CreateTransactionUseCase>();
 builder.Services.AddScoped<GetTransactionByReceiptNumberUseCase>();
+builder.Services.AddScoped<SearchTransactionsUseCase>();
 
 
 

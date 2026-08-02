@@ -1,4 +1,5 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +32,33 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<Transaction>> SearchAsync(int? customerId, DateOnly? date, string? receiptNumber)
+        public async Task<IReadOnlyList<SearchTransactionSummaryResponse>> SearchAsync(int? customerId, DateOnly? date)
         {
-            throw new NotImplementedException();
+            var query = _context.Transactions
+        .AsNoTracking();
+
+            if (customerId.HasValue)
+            {
+                query = query.Where(x => x.CustomerId == customerId.Value);
+            }
+
+            if (date.HasValue)
+            {
+                query = query.Where(x => DateOnly.FromDateTime(x.CreatedOn) == date.Value);
+            }
+
+            return await query.OrderByDescending(x => x.CreatedOn)
+                .Select(x => new SearchTransactionSummaryResponse
+                {
+                    ReceiptNumber = x.ReceiptNumber,
+                    Amount = x.Amount,
+                    Status = x.Status,
+                    CreatedOn = x.CreatedOn,
+                    CustomerName = x.Customer.FullName,
+                    BranchName = x.Branch.Name,
+                    PaymentMethodName = x.PaymentMethod.Name
+                })
+                .ToListAsync();
         }
     }
 }
