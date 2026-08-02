@@ -8,19 +8,21 @@ The project was developed as part of the **Software Engineering Internship Asses
 
 # Features
 
-* High-throughput transaction processing
-* Thread-safe receipt number generation
-* ACID-compliant transaction persistence
-* Pessimistic concurrency support
-* Daily transaction reporting
-* Search by receipt number, customer, and date
-* Global exception handling
-* Unified API response contract
-* JWT Authentication & Authorization
-* Swagger API Documentation
-* Entity Framework Core Migrations
-* Unit Testing
-* Clean Architecture
+- High-throughput transaction processing
+- Thread-safe receipt number generation
+- Database-backed pessimistic concurrency control
+- ACID-compliant transaction persistence
+- Transaction lifecycle management (Pending, Settled, Cancelled)
+- Daily transaction reporting and business analytics
+- Search transactions by receipt number, customer, and date
+- Performance benchmarked with k6
+- Global exception handling
+- Unified API response contract
+- JWT Authentication & Authorization
+- Swagger API Documentation
+- Entity Framework Core Migrations
+- Unit Testing
+- Production-oriented Clean Architecture
 
 ---
 
@@ -36,6 +38,20 @@ The project was developed as part of the **Software Engineering Internship Asses
 | Swagger (Swashbuckle) | Latest       |
 | JWT Authentication    | Bearer Token |
 | xUnit                 | Latest       |
+
+---
+
+# Architecture Decisions
+
+The following architectural decisions were intentionally made:
+
+- Clean Architecture to separate business logic from infrastructure.
+- Repository Pattern for data access abstraction.
+- Unit of Work for transactional consistency.
+- Database-backed pessimistic locking for receipt sequence generation.
+- SQL projection for reporting queries to minimize memory allocations.
+- Centralized exception handling middleware.
+- Dependency Injection throughout the application.
 
 ---
 
@@ -68,7 +84,7 @@ Application
 └── Modules
       ├── Customers
       └── Transactions
-   
+
 ↓
 
 Domain
@@ -112,11 +128,11 @@ src/
 
 ## Main Entities
 
-* Customer
-* Transaction
-* Branch
-* PaymentMethod
-* ReceiptSequence
+- Customer
+- Transaction
+- Branch
+- PaymentMethod
+- ReceiptSequence
 
 ### Relationships
 
@@ -163,12 +179,12 @@ PAY-20260730-15-000012
 
 The system implements the following core business rules:
 
-* Receipt numbers are globally unique.
-* Receipt sequences restart every day for each prefix.
-* Failed transactions do not consume receipt numbers unless committed.
-* Settled transactions cannot be modified.
-* Reports display only committed transactions.
-* All transaction operations execute atomically inside database transactions.
+- Receipt numbers are globally unique.
+- Receipt sequences restart every day for each prefix.
+- Failed transactions do not consume receipt numbers unless committed.
+- Settled transactions cannot be modified.
+- Reports display only committed transactions.
+- All transaction operations execute atomically inside database transactions.
 
 ---
 
@@ -288,9 +304,30 @@ This guarantees that only one transaction at a time can update the sequence for 
 
 As a result:
 
-* Two concurrent requests cannot generate the same sequence number.
-* Receipt numbers remain globally unique.
-* Concurrent updates are serialized at the database level.
+- Two concurrent requests cannot generate the same sequence number.
+- Receipt numbers remain globally unique.
+- Concurrent updates are serialized at the database level.
+
+---
+
+### Receipt Sequence Generation
+
+Receipt numbers are generated using a dedicated `ReceiptSequence` table.
+
+To guarantee uniqueness under heavy concurrent workloads, the implementation uses:
+
+- SQL Server `UPDLOCK`
+- SQL Server `ROWLOCK`
+- Explicit Unit of Work transactions
+- Retry mechanism for concurrent first-row creation
+- Unique database constraint on `(Prefix, Date)`
+
+This guarantees:
+
+- No duplicate receipt numbers
+- Daily sequence reset
+- Thread-safe generation
+- ACID-compliant persistence
 
 ---
 
@@ -328,11 +365,11 @@ Receipt generation and transaction creation are executed as a single atomic unit
 
 The following operations occur inside the same database transaction:
 
-* Receipt sequence retrieval
-* Sequence increment
-* Receipt number generation
-* Transaction creation
-* Database persistence
+- Receipt sequence retrieval
+- Sequence increment
+- Receipt number generation
+- Transaction creation
+- Database persistence
 
 Only after every operation succeeds is the transaction committed.
 
@@ -348,10 +385,10 @@ Application logic is reinforced by database constraints to provide defense in de
 
 The database enforces:
 
-* Unique receipt numbers
-* Unique daily receipt sequence records per transaction prefix
-* ACID-compliant transactions
-* Referential integrity through foreign keys
+- Unique receipt numbers
+- Unique daily receipt sequence records per transaction prefix
+- ACID-compliant transactions
+- Referential integrity through foreign keys
 
 These guarantees ensure that data integrity is preserved even under high levels of concurrency.
 
@@ -365,9 +402,7 @@ Instead of relying solely on application logic, the design delegates concurrency
 
 The result is a receipt generation mechanism that is deterministic, resilient under concurrent load, and suitable for transactional systems where uniqueness and consistency are critical requirements.
 
-
 ---
-
 
 # Why This Design?
 
@@ -397,10 +432,10 @@ This approach was selected because the database is the authoritative source of t
 
 Using database locks provides several advantages:
 
-* Synchronization works across all application instances.
-* No shared in-memory state is required.
-* Locking remains effective even in distributed deployments.
-* The locking strategy is coordinated directly by SQL Server's transaction manager.
+- Synchronization works across all application instances.
+- No shared in-memory state is required.
+- Locking remains effective even in distributed deployments.
+- The locking strategy is coordinated directly by SQL Server's transaction manager.
 
 Application-level synchronization mechanisms (such as `lock`, `SemaphoreSlim`, or static objects) only protect a single application instance and cannot guarantee consistency when multiple servers or processes access the same database.
 
@@ -428,12 +463,12 @@ Separating these operations could leave the system in an inconsistent state if o
 
 To prevent this, the application executes the following operations inside a single database transaction:
 
-* Validate business references.
-* Acquire the receipt sequence lock.
-* Generate the next receipt number.
-* Create the financial transaction.
-* Persist all changes.
-* Commit the transaction.
+- Validate business references.
+- Acquire the receipt sequence lock.
+- Generate the next receipt number.
+- Create the financial transaction.
+- Persist all changes.
+- Commit the transaction.
 
 If any step fails, the transaction is rolled back, ensuring that neither the receipt sequence nor the financial transaction is partially committed.
 
@@ -447,11 +482,11 @@ Instead of calculating the next sequence number by querying the `Transactions` t
 
 This design offers several advantages:
 
-* Constant-time retrieval of the current sequence.
-* No expensive aggregate queries (`MAX`) over historical transactions.
-* Better scalability as transaction volume grows.
-* Simpler concurrency management.
-* Independent daily sequences for each transaction prefix.
+- Constant-time retrieval of the current sequence.
+- No expensive aggregate queries (`MAX`) over historical transactions.
+- Better scalability as transaction volume grows.
+- Simpler concurrency management.
+- Independent daily sequences for each transaction prefix.
 
 The dedicated sequence table isolates the responsibility of sequence management, resulting in a cleaner and more maintainable design.
 
@@ -473,11 +508,11 @@ Receipt generation is implemented as a dedicated service rather than being embed
 
 This separation provides several benefits:
 
-* Single responsibility for receipt generation.
-* Reusable logic across multiple transaction workflows.
-* Easier unit testing.
-* Clear separation between business workflow orchestration and receipt generation logic.
-* Improved maintainability if receipt generation rules evolve in the future.
+- Single responsibility for receipt generation.
+- Reusable logic across multiple transaction workflows.
+- Easier unit testing.
+- Clear separation between business workflow orchestration and receipt generation logic.
+- Improved maintainability if receipt generation rules evolve in the future.
 
 The transaction use case coordinates the overall business process, while the receipt generator focuses exclusively on generating valid receipt numbers.
 
@@ -495,6 +530,42 @@ This approach keeps the architecture easy to understand, reduces unnecessary abs
 
 ---
 
+# Performance Testing
+
+The solution includes load testing using **k6**.
+
+The benchmark validates:
+
+- Concurrent transaction creation
+- Receipt number uniqueness
+- Average response time
+- P95 latency
+- Error rate
+- Throughput
+
+Results are available in:
+
+docs/Performance/Performance Benchmark Report.md
+
+---
+
+# Performance Optimizations
+
+Several optimizations were implemented to satisfy the performance requirements:
+
+- Async/Await throughout the application
+- SQL projections for read-only queries
+- Server-side aggregation for reports
+- Database indexing
+- Minimal EF Core tracking for read operations
+- Database-backed pessimistic locking for receipt generation
+- Repository Pattern with Unit of Work
+- Optimized LINQ queries
+
+---
+
+---
+
 ## Overall Design Philosophy
 
 The architecture was designed around a simple principle:
@@ -505,9 +576,7 @@ Rather than relying solely on application logic, the solution combines SQL Serve
 
 This layered approach provides strong consistency guarantees while keeping the implementation readable, testable, and aligned with enterprise software engineering practices.
 
-
 ---
-
 
 # API Documentation
 
@@ -642,15 +711,15 @@ The application has been designed with scalability and reliability in mind while
 
 Implemented optimizations include:
 
-* Asynchronous database operations using `async` / `await`
-* Pessimistic locking to guarantee safe concurrent receipt number generation
-* Database transactions to ensure atomic operations
-* Entity Framework Core query projections where appropriate
-* Repository Pattern to separate persistence concerns
-* Unit of Work to execute related operations as a single transaction
-* Dependency Injection throughout the application
-* Feature-based modular organization for improved maintainability
-* Centralized exception handling to reduce duplicated error-handling logic
+- Asynchronous database operations using `async` / `await`
+- Pessimistic locking to guarantee safe concurrent receipt number generation
+- Database transactions to ensure atomic operations
+- Entity Framework Core query projections where appropriate
+- Repository Pattern to separate persistence concerns
+- Unit of Work to execute related operations as a single transaction
+- Dependency Injection throughout the application
+- Feature-based modular organization for improved maintainability
+- Centralized exception handling to reduce duplicated error-handling logic
 
 ---
 
@@ -679,9 +748,9 @@ Implemented optimizations include:
 
 ## Prerequisites
 
-* .NET 8 SDK
-* SQL Server
-* Visual Studio 2022 or later
+- .NET 8 SDK
+- SQL Server
+- Visual Studio 2022 or later
 
 ---
 
@@ -697,10 +766,10 @@ git clone https://github.com/your-username/EnterpriseTransactionProcessing.git
 
 Update the following configuration values inside `appsettings.json`:
 
-* SQL Server connection string
-* JWT Secret Key
-* JWT Issuer
-* JWT Audience
+- SQL Server connection string
+- JWT Secret Key
+- JWT Issuer
+- JWT Audience
 
 ---
 
@@ -746,23 +815,27 @@ Use the **Authorize** button to provide a valid JWT access token before accessin
 
 ---
 
-# Future Enhancements
+# Future Improvements
 
-Potential improvements planned for future versions include:
-
-* Redis distributed caching
-* Serilog structured logging
-* API Rate Limiting
-* Health Checks
-* Docker containerization
-* Distributed caching for frequently accessed reference data
-* Background processing for long-running operations (Sending emails, generating reports, processing files)
-* Audit logging
-* Transaction cancellation support
-* Idempotent transaction requests
+- Idempotent transaction requests
+- In-memory caching for reference data
+- Audit logging
+- Distributed caching (Redis)
+- OpenTelemetry tracing
+- Background jobs
+- Docker support
+- CI/CD pipeline
 
 ---
 
-# Author
+# Authors
 
-Developed as part of the **AZKA Software Engineering Internship Assessment** using **ASP.NET Core 8**, **Entity Framework Core**, **SQL Server**, and enterprise software engineering practices.
+**Nour El-Din Mohamed**
+
+Backend Software Engineer
+ASP.NET Core • .NET 8 • EF Core • SQL Server • Clean Architecture • System Design • System Architecture • SOLID Principles
+
+**Omar Youssef**
+
+FullStack Developer
+ASP.NET Core • .NET 8 • EF Core • SQL Server • Clean Architecture • React.js • Tailwind.css
