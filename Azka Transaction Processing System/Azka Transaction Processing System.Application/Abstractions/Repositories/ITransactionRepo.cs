@@ -1,4 +1,5 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Common;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
     {
         Task<Transaction?> GetTransactionDetailsByReceiptAsync(string receiptNumber);
 
-        Task<List<Transaction>> SearchAsync(int? customerId, DateOnly? date, string? receiptNumber);
+        Task<IReadOnlyList<SearchTransactionSummaryResponse>> SearchAsync(int? customerId, DateOnly? date);
 
         Task<bool> ReceiptExistsAsync(string receiptNumber);
 
