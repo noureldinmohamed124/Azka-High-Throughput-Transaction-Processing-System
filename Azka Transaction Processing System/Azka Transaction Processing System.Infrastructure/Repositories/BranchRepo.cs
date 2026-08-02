@@ -1,6 +1,8 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
+using Azka_Transaction_Processing_System.Application.Modules.Branches.GetAllBranches;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +17,17 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
         {
         }
 
-        public Task<bool> ExistsAsync(int branchId)
+        public async Task<IReadOnlyList<BranchResponse>> GetAllBranchesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Branches
+                .AsNoTracking()
+                .OrderBy(x => x.Name)
+                .Select(x => new BranchResponse
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToListAsync();
         }
-
-        public Task<Branch?> GetByCodeAsync(string code)
-        {
-            throw new NotImplementedException();
-        }
+                
     }
 }
