@@ -10,7 +10,7 @@ namespace Azka_Transaction_Processing_System.Domain.Entities
     public class ReceiptSequence
     {
         public int Id { get; set; }
-        public ReceiptPrefixEnum Prefix { get; set; }
+        public TransactionTypeEnum Prefix { get; set; }
 
         public DateOnly Date { get; set; }
 

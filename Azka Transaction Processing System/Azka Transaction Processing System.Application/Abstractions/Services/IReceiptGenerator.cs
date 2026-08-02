@@ -10,6 +10,6 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Services
 {
     public interface IReceiptGenerator
     {
-        Task<ReceiptNumberResult> GenerateAsync(ReceiptPrefixEnum prefix,int customerId, CancellationToken cancellationToken = default);
+        Task<ReceiptNumberResult> GenerateAsync(TransactionTypeEnum prefix,int customerId, CancellationToken cancellationToken = default);
     }
 }

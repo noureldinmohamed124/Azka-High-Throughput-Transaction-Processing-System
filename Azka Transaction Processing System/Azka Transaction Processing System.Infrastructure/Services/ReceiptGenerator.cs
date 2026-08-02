@@ -27,7 +27,7 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Services
             _receiptSequenceRepo = repository;
         }
 
-        public async Task<ReceiptNumberResult> GenerateAsync(ReceiptPrefixEnum prefix, int receiptUserId, CancellationToken cancellationToken = default)
+        public async Task<ReceiptNumberResult> GenerateAsync(TransactionTypeEnum prefix, int receiptUserId, CancellationToken cancellationToken = default)
         {
             
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -55,7 +55,7 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Services
 
             return new ReceiptNumberResult
             {
-                ReceiptNumber = $"{prefix.ToCode()}" + $"{today:yyyyMMdd}" + $"{receiptUserId}" + $"{sequence.LastSequence:D6}",
+                ReceiptNumber = $"{prefix.ToCode()}-" + $"{today:yyyyMMdd}-" + $"{receiptUserId}-" + $"{sequence.LastSequence:D6}",
                 Sequence = sequence.LastSequence,
                 Date = today,
             };

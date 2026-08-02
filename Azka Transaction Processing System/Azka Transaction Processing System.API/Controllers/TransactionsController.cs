@@ -28,8 +28,9 @@ namespace Azka_Transaction_Processing_System.API.Controllers
                 Amount = request.Amount,
                 BranchId = request.BranchId,
                 PaymentMethodId = request.PaymentMethodId,
-                TransactionStatus = request.Status,
+                TransactionStatus = request.TransactionStatus,
                 TransactionType = request.TransactionType,
+                SettledOn = request.SettledOn
             };
             var result = await _createTransactionUseCase.ExecuteAsync(command);
             return OkResponse(result);

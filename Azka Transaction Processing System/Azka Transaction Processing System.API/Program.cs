@@ -91,12 +91,10 @@ builder.Services.AddCors(options =>
 
 
 // 7. Enforce Enums to accept only String
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.Converters
-        .Add(new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
-});
-
+builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+    });
 
 
 

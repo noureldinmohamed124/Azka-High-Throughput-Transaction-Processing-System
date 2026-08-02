@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Azka_Transaction_Processing_System.Domain.Enums
 {
-    public enum ReceiptPrefixEnum
+    public enum TransactionTypeEnum
     {
         Payment = 1,
         Refund = 2,

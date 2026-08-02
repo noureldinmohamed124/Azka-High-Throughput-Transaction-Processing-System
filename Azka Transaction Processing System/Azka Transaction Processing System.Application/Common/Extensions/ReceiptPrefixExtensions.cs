@@ -10,26 +10,26 @@ namespace Azka_Transaction_Processing_System.Application.Common.Extensions
 {
     public static class ReceiptPrefixExtensions
     {
-        public static string ToCode(this ReceiptPrefixEnum prefix)
+        public static string ToCode(this TransactionTypeEnum prefix)
         {
             return prefix switch
             {
-                ReceiptPrefixEnum.Payment => "PAY",
-                ReceiptPrefixEnum.Refund => "REF",
-                ReceiptPrefixEnum.Reversal => "REV",
-                ReceiptPrefixEnum.Chargeback => "CHB",
+                TransactionTypeEnum.Payment => "PAY",
+                TransactionTypeEnum.Refund => "REF",
+                TransactionTypeEnum.Reversal => "REV",
+                TransactionTypeEnum.Chargeback => "CHB",
                 _ => throw new ValidationException("Unsupported transaction type.")
             };
         }
 
-        public static ReceiptPrefixEnum FromCode(string code)
+        public static TransactionTypeEnum FromCode(string code)
         {
             return code.Trim().ToUpperInvariant() switch
             {
-                "PAY" => ReceiptPrefixEnum.Payment,
-                "REF" => ReceiptPrefixEnum.Refund,
-                "REV" => ReceiptPrefixEnum.Reversal,
-                "CHB" => ReceiptPrefixEnum.Chargeback,
+                "PAY" => TransactionTypeEnum.Payment,
+                "REF" => TransactionTypeEnum.Refund,
+                "REV" => TransactionTypeEnum.Reversal,
+                "CHB" => TransactionTypeEnum.Chargeback,
                 _ => throw new ValidationException("Unsupported transaction type.")
             };
         }

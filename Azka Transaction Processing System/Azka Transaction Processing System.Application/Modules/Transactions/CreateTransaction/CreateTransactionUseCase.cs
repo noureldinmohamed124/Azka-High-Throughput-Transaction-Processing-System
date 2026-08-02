@@ -66,6 +66,10 @@ namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.Cr
                         SettledOn = null
                     };
 
+                    if (command.SettledOn != null)
+                        transaction.SettledOn = command.SettledOn;
+
+
                     await _transactionRepo.AddAsync(transaction);
 
                     await _unitOfWork.SaveChangesAsync();
@@ -74,6 +78,8 @@ namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.Cr
 
                     return new CreateTransactionResponse
                     {
+                        TransactionId = transaction.Id,
+                        CreatedOn = transaction.CreatedOn,
                         ReceiptNumber = receipt.ReceiptNumber,
                         Amount = transaction.Amount,
                         Status = transaction.Status,
