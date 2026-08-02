@@ -11,7 +11,7 @@ The project was developed as part of the **Software Engineering Internship Asses
 * High-throughput transaction processing
 * Thread-safe receipt number generation
 * ACID-compliant transaction persistence
-* Optimistic concurrency support
+* Pessimistic concurrency support
 * Daily transaction reporting
 * Search by receipt number, customer, and date
 * Global exception handling
