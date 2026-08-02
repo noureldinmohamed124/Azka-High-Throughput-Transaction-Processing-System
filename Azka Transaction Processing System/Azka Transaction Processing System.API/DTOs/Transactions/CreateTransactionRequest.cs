@@ -5,7 +5,7 @@ namespace Azka_Transaction_Processing_System.API.DTOs.Transactions
     public class CreateTransactionRequest
     {
         // Payment - Refund - Reversal - Chargeback
-        public string TransactionType { get; init; } = default!;
+        public ReceiptPrefixEnum TransactionType { get; init; } = default!;
         public int BranchId { get; init; }
         public int PaymentMethodId { get; init; }
         public decimal Amount { get; init; }

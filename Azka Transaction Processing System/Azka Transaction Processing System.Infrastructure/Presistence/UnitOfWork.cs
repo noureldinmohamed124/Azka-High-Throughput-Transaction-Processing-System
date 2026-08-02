@@ -1,5 +1,8 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Common;
 using Azka_Transaction_Processing_System.Application.Common;
+using Azka_Transaction_Processing_System.Application.Exceptions;
+using Azka_Transaction_Processing_System.Infrastructure.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -26,9 +29,16 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence
             _transaction = await _context.Database.BeginTransactionAsync();
         }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            return _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                return await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex) when (SqlServerHelper.IsReceiptSequenceConflict(ex))
+            {
+                throw new DuplicateReceiptSequenceException("");
+            }
         }
 
         public async Task CommitTransactionAsync()
@@ -44,13 +54,34 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence
 
         public async Task RollbackTransactionAsync()
         {
-            if (_transaction is null)
-                throw new InvalidOperationException("No active transaction.");
 
-            await _transaction.RollbackAsync();
-            await _transaction.DisposeAsync();
+            if (_transaction == null)
+                return;
 
-            _transaction = null;
+            try
+            {
+                await _transaction.RollbackAsync();
+            }
+            finally
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+
+            //if (_transaction is null)
+            //    throw new InvalidOperationException("No active transaction.");
+
+            //await _transaction.RollbackAsync();
+            //await _transaction.DisposeAsync();
+
+            //_transaction = null;
         }
+
+        public void ClearChanges()
+        {
+            _context.ChangeTracker.Clear();
+        }
+
+
     }
 }

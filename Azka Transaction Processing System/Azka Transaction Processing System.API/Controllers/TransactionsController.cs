@@ -1,4 +1,5 @@
 ﻿using Azka_Transaction_Processing_System.API.Commons;
+using Azka_Transaction_Processing_System.API.DTOs.Transactions;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +19,20 @@ namespace Azka_Transaction_Processing_System.API.Controllers
             _createTransactionUseCase = createTransactionUseCase;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CreateTransaction()
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTransaction(CreateTransactionRequest request)
         {
-            var cc = await _createTransactionUseCase.ExecuteAsync();
-            return OkResponse("");
+            var command = new CreateTransactionCommand
+            {
+                Amount = request.Amount,
+                BranchId = request.BranchId,
+                PaymentMethodId = request.PaymentMethodId,
+                TransactionStatus = request.Status,
+                TransactionType = request.TransactionType,
+            };
+            var result = await _createTransactionUseCase.ExecuteAsync(command);
+            return OkResponse(result);
         }
     }
 }

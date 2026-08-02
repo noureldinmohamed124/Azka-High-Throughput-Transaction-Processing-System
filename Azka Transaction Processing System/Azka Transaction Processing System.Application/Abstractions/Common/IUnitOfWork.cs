@@ -10,10 +10,12 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Common
     {
         Task BeginTransactionAsync();
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-
         Task CommitTransactionAsync();
 
         Task RollbackTransactionAsync();
+
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+        void ClearChanges();
     }
 }
