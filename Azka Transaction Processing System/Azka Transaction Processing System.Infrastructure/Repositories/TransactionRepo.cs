@@ -1,6 +1,7 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,14 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
         {
         }
 
-        public Task<Transaction?> GetByReceiptAsync(string receiptNumber)
+        public async Task<Transaction?> GetTransactionDetailsByReceiptAsync(string receiptNumber)
         {
-            throw new NotImplementedException();
+            return await _context.Transactions
+                .AsNoTracking()
+                .Include(x => x.Customer)
+                .Include(x => x.Branch)
+                .Include(x => x.PaymentMethod)
+                .FirstOrDefaultAsync(x => x.ReceiptNumber == receiptNumber);
         }
 
         public Task<bool> ReceiptExistsAsync(string receiptNumber)
