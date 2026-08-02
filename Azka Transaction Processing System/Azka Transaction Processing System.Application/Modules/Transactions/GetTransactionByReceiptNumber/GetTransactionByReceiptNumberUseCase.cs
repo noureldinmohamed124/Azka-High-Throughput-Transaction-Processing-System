@@ -6,25 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Azka_Transaction_Processing_System.Application.Modules.Reports.SearchByReceipt
+namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber
 {
-    public class SearchTransactionByReceiptNumberUseCase
+    public class GetTransactionByReceiptNumberUseCase
     {
         private readonly ITransactionRepo _transactionRepo;
 
-        public SearchTransactionByReceiptNumberUseCase(ITransactionRepo transactionRepo)
+        public GetTransactionByReceiptNumberUseCase(ITransactionRepo transactionRepo)
         {
             _transactionRepo = transactionRepo;
         }
 
 
-        public async Task<TransactionDetailsResponse> ExecuteAsync(SearchTransactionByReceiptNumberQuery query)
+        public async Task<GetTransactionDetailsByReceiptNumberResponse> ExecuteAsync(GetTransactionByReceiptNumberQuery query)
         {
             var transaction = await _transactionRepo.GetTransactionDetailsByReceiptAsync(query.RecieptNumber);
 
             if (transaction is null) throw new NotFoundException("Transaction was not found.");
 
-            return new TransactionDetailsResponse
+            return new GetTransactionDetailsByReceiptNumberResponse
             {
                 ReceiptNumber = transaction.ReceiptNumber,
                 Amount = transaction.Amount,
