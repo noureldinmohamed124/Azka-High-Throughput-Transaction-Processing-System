@@ -31,11 +31,6 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Security
             {
                 var user = _httpContextAccessor.HttpContext?.User;
 
-                foreach (var claim in user?.Claims ?? Enumerable.Empty<Claim>())
-                {
-                    Console.WriteLine($"{claim.Type} = {claim.Value}");
-                }
-
                 foreach (var claimType in UserIdClaimTypes)
                 {
                     var value = user?.FindFirst(claimType)?.Value;
