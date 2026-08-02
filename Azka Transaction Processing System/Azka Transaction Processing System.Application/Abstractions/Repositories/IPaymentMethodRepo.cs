@@ -1,4 +1,5 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Common;
+using Azka_Transaction_Processing_System.Application.Modules.PaymentMethods.GetPaymentMethods;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
     public interface IPaymentMethodRepo : IGenericRepo<PaymentMethod>
     {
         Task<bool> ExistsAsync(int id);
-
-        Task<PaymentMethod?> GetByNameAsync(string name);
+        Task<IReadOnlyList<PaymentMethodResponse>> GetAllPaymentMethodsAsync();
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
+using Azka_Transaction_Processing_System.Application.Modules.PaymentMethods.GetPaymentMethods;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +22,15 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<PaymentMethod?> GetByNameAsync(string name)
+        public async Task<IReadOnlyList<PaymentMethodResponse>> GetAllPaymentMethodsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.PaymentMethods.AsNoTracking().OrderBy(x => x.Name)
+                .Select(x => new PaymentMethodResponse
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToListAsync();
         }
     }
 }
