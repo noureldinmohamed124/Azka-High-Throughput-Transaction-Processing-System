@@ -1,4 +1,5 @@
 ﻿using Azka_Transaction_Processing_System.Application.Abstractions.Common;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Domain.Entities;
 using System;
@@ -15,7 +16,7 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
 
         Task<IReadOnlyList<SearchTransactionSummaryResponse>> SearchAsync(int? customerId, DateOnly? date);
 
-        Task<bool> ReceiptExistsAsync(string receiptNumber);
+        Task<DailyTransactionSummaryResponse> GetDailySummaryAsync(DateOnly date);
 
     }
 }

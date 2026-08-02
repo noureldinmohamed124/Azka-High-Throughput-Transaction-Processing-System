@@ -3,6 +3,7 @@ using Azka_Transaction_Processing_System.Application.Abstractions.Common;
 using Azka_Transaction_Processing_System.Application.Abstractions.Repositories;
 using Azka_Transaction_Processing_System.Application.Abstractions.Services;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
@@ -42,7 +43,6 @@ builder.Services.AddScoped<IReceiptSequenceRepo, ReceiptSequenceRepo>();
 
 
 
-
 // 3. Services
 builder.Services.AddScoped<IReceiptGenerator, ReceiptGenerator>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -53,6 +53,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<CreateTransactionUseCase>();
 builder.Services.AddScoped<GetTransactionByReceiptNumberUseCase>();
 builder.Services.AddScoped<SearchTransactionsUseCase>();
+builder.Services.AddScoped<DailyTransactionSummaryUseCase>();
 
 
 
