@@ -32,6 +32,13 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Configur
 
             builder.HasIndex(x => x.Phone)
                 .IsUnique();
+
+            builder.HasData(
+                new Customer { Id = 1, FullName = "Omar Youssef", Email = "omar@gamil.com", Phone = "01064821657" },
+                new Customer { Id = 2, FullName = "Ahmed Mohamed", Email = "ahmed@gamil.com", Phone = "01067521657" },
+                new Customer { Id = 3, FullName = "Mohamed Hossam", Email = "mohamed@gamil.com", Phone = "01035821657" },
+                new Customer { Id = 4, FullName = "Adel Mostafa", Email = "adel@gamil.com", Phone = "01464821957" }
+            );
         }
     }
 }

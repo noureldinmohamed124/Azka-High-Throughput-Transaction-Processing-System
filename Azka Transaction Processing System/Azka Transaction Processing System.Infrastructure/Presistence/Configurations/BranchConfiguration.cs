@@ -27,6 +27,13 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Configur
 
             builder.HasIndex(x => x.Code)
                 .IsUnique();
+
+            builder.HasData(
+                new Branch { Id = 1, Name = "Cairo", Code = "C1" },
+                new Branch { Id = 2, Name = "Alex", Code = "A1" },
+                new Branch { Id = 3, Name = "Giza", Code = "G1" },
+                new Branch { Id = 4, Name = "Suez", Code = "S1" }
+            );
         }
     }
 }

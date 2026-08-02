@@ -11,6 +11,7 @@ namespace Azka_Transaction_Processing_System.Domain.Enums
         Pending = 1,
         Completed = 2,
         Failed = 3,
-        Settled = 4
+        Settled = 4,
+        Cancelled = 5
     }
 }

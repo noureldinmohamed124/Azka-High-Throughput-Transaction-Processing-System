@@ -46,6 +46,32 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
                         .IsUnique();
 
                     b.ToTable("Branches", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "C1",
+                            Name = "Cairo"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "A1",
+                            Name = "Alex"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "G1",
+                            Name = "Giza"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "S1",
+                            Name = "Suez"
+                        });
                 });
 
             modelBuilder.Entity("Azka_Transaction_Processing_System.Domain.Entities.Customer", b =>
@@ -80,6 +106,36 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
                         .IsUnique();
 
                     b.ToTable("Customers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "omar@gamil.com",
+                            FullName = "Omar Youssef",
+                            Phone = "01064821657"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "ahmed@gamil.com",
+                            FullName = "Ahmed Mohamed",
+                            Phone = "01067521657"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "mohamed@gamil.com",
+                            FullName = "Mohamed Hossam",
+                            Phone = "01035821657"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Email = "adel@gamil.com",
+                            FullName = "Adel Mostafa",
+                            Phone = "01464821957"
+                        });
                 });
 
             modelBuilder.Entity("Azka_Transaction_Processing_System.Domain.Entities.PaymentMethod", b =>
@@ -152,7 +208,8 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
                     b.HasKey("Id");
 
                     b.HasIndex("Prefix", "Date")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("IX_ReceiptSequence_Prefix_Date");
 
                     b.ToTable("ReceiptSequences", (string)null);
                 });
@@ -170,6 +227,9 @@ namespace Azka_Transaction_Processing_System.Infrastructure.Presistence.Migratio
 
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancelledOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
