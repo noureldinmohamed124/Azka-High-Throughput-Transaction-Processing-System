@@ -10,7 +10,7 @@ namespace Azka_Transaction_Processing_System.Application.Abstractions.Repositori
 {
     public interface ITransactionRepo : IGenericRepo<Transaction>
     {
-        Task<Transaction?> GetByReceiptAsync(string receiptNumber);
+        Task<Transaction?> GetTransactionDetailsByReceiptAsync(string receiptNumber);
 
         Task<List<Transaction>> SearchAsync(int? customerId, DateOnly? date, string? receiptNumber);
 
