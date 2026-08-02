@@ -1,7 +1,7 @@
 ﻿using Azka_Transaction_Processing_System.API.Commons;
 using Azka_Transaction_Processing_System.API.DTOs.Transactions;
-using Azka_Transaction_Processing_System.Application.Modules.Reports.SearchByReceipt;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +14,9 @@ namespace Azka_Transaction_Processing_System.API.Controllers
     public class TransactionsController : BaseApiController
     {
         private readonly CreateTransactionUseCase _createTransactionUseCase;
-        private readonly SearchTransactionByReceiptNumberUseCase _searchTransactionByReceiptNumberUseCase;
+        private readonly GetTransactionByReceiptNumberUseCase _searchTransactionByReceiptNumberUseCase;
 
-        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, SearchTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase)
+        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase)
         {
             _createTransactionUseCase = createTransactionUseCase;
             _searchTransactionByReceiptNumberUseCase = searchTransactionByReceiptNumberUseCase;
@@ -43,7 +43,7 @@ namespace Azka_Transaction_Processing_System.API.Controllers
         [HttpGet("receipt/{receiptNumber}")]
         public async Task<IActionResult> GetTransactionByReceiptNumber(string receiptNumber)
         {
-            var query = new SearchTransactionByReceiptNumberQuery
+            var query = new GetTransactionByReceiptNumberQuery
             {
                 RecieptNumber = receiptNumber
             };

@@ -12,6 +12,7 @@
     <Folder Include="Modules\Customers\" />
     <Folder Include="Modules\Branches\" />
     <Folder Include="Modules\PaymentMethods\" />
+    <Folder Include="Modules\Reports\" />
   </ItemGroup>
 
   <ItemGroup>
