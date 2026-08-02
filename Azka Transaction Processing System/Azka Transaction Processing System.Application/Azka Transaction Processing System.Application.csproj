@@ -10,7 +10,6 @@
   <ItemGroup>
     <Folder Include="Common\Interfaces\" />
     <Folder Include="Modules\Customers\" />
-    <Folder Include="Modules\Branches\" />
     <Folder Include="Modules\Reports\" />
   </ItemGroup>
 
