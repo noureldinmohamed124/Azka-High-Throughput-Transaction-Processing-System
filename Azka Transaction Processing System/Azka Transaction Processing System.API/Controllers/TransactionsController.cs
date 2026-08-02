@@ -2,7 +2,7 @@
 using Azka_Transaction_Processing_System.API.DTOs.Transactions;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
-using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceipt;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +16,11 @@ namespace Azka_Transaction_Processing_System.API.Controllers
     public class TransactionsController : BaseApiController
     {
         private readonly CreateTransactionUseCase _createTransactionUseCase;
-        private readonly GetTransactionByReceiptNumberUseCase _searchTransactionByReceiptNumberUseCase;
+        private readonly GetTransactionByReceiptUseCase _searchTransactionByReceiptNumberUseCase;
         private readonly SearchTransactionsUseCase _searchTransactionsUseCase;
         private readonly DailyTransactionSummaryUseCase _dailyTransactionSummaryUseCase;
 
-        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptNumberUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase, DailyTransactionSummaryUseCase dailyTransactionSummaryUseCase)
+        public TransactionsController(CreateTransactionUseCase createTransactionUseCase, GetTransactionByReceiptUseCase searchTransactionByReceiptNumberUseCase, SearchTransactionsUseCase searchTransactionsUseCase, DailyTransactionSummaryUseCase dailyTransactionSummaryUseCase)
         {
             _createTransactionUseCase = createTransactionUseCase;
             _searchTransactionByReceiptNumberUseCase = searchTransactionByReceiptNumberUseCase;
@@ -49,7 +49,7 @@ namespace Azka_Transaction_Processing_System.API.Controllers
         [HttpGet("receipt/{receiptNumber}")]
         public async Task<IActionResult> GetTransactionByReceiptNumber(string receiptNumber)
         {
-            var query = new GetTransactionByReceiptNumberQuery
+            var query = new GetTransactionByReceiptQuery
             {
                 RecieptNumber = receiptNumber
             };

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber
+namespace Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceipt
 {
-    public class GetTransactionDetailsByReceiptNumberResponse
+    public class GetTransactionDetailsByReceiptResponse
     {
         public string ReceiptNumber { get; init; } = string.Empty;
         public decimal Amount { get; init; }

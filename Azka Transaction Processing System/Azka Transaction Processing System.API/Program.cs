@@ -5,7 +5,7 @@ using Azka_Transaction_Processing_System.Application.Abstractions.Services;
 using Azka_Transaction_Processing_System.Application.Modules.PaymentMethods.GetPaymentMethods;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.CreateTransaction;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.DailySummary;
-using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceiptNumber;
+using Azka_Transaction_Processing_System.Application.Modules.Transactions.GetTransactionByReceipt;
 using Azka_Transaction_Processing_System.Application.Modules.Transactions.SearchTransactions;
 using Azka_Transaction_Processing_System.Infrastructure.Presistence;
 using Azka_Transaction_Processing_System.Infrastructure.Repositories;
@@ -52,7 +52,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // 4. Use Cases
 builder.Services.AddScoped<CreateTransactionUseCase>();
-builder.Services.AddScoped<GetTransactionByReceiptNumberUseCase>();
+builder.Services.AddScoped<GetTransactionByReceiptUseCase>();
 builder.Services.AddScoped<SearchTransactionsUseCase>();
 builder.Services.AddScoped<DailyTransactionSummaryUseCase>();
 builder.Services.AddScoped<GetPaymentMethodsUseCase>();
